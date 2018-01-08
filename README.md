@@ -45,7 +45,6 @@ $ cat sample-1-istio.yml
     istio_ms_hostname_and_profile: openshift0
 
   roles:
-    #- role: ansible-role-istio
     - role: chilcano.istio
       istio:
         action_to_trigger: clean  # [ deploy | clean ]
