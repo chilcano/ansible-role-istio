@@ -10,13 +10,6 @@
     - "{{ my_oc }} delete project bookinfo"
   ignore_errors: yes
 
-- name: clean | Removing Weave-Scope
-  command: "{{ item }}"
-  with_items:
-    - "{{ my_oc }} delete --namespace weave-scope -f https://cloud.weave.works/k8s/scope.yaml"
-    - "{{ my_oc }} delete project weave-scope"
-  ignore_errors: yes
-
 - name: clean | Removing Istio addons
   command: "{{ item }}"
   with_items:
