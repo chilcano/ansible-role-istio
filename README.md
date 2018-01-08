@@ -45,7 +45,8 @@ $ cat sample-1-istio.yml
     istio_ms_hostname_and_profile: openshift0
 
   roles:
-    - role: ansible-role-istio
+    #- role: ansible-role-istio
+    - role: chilcano.istio
       istio:
         action_to_trigger: clean  # [ deploy | clean ]
         action:
@@ -65,24 +66,16 @@ $ cat sample-1-istio.yml
           istio_usr: developer
           istio_pwd: anypassword
         repo:
-          #release_tag_name: "0.2.12"
-          #release_tag_name: "0.2.10"
-          #release_tag_name: "0.2.9"
+          #release_tag_name: ""   # latest
           release_tag_name: "0.2.7"
           #release_tag_name: "0.2.6"
-          #release_tag_name: "0.2.4"
-          #release_tag_name: "0.2.2"
-          #release_tag_name: "0.2.1"
-          #release_tag_name: "0.2.0"
-          #release_tag_name: "0.1.6"
-          #release_tag_name: "0.1.5"
 ```
 
 ## Using the Ansible Role
 
 Install the role:
 ```
-$ ansible-galaxy install chilcano.istio
+$ sudo ansible-galaxy install chilcano.istio
 ```
 
 Copy the playbook from your roles path to the current working directory:

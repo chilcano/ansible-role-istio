@@ -7,9 +7,10 @@
     istio_ms_hostname_and_profile: openshift0
 
   roles:
-    - role: ansible-role-istio
+    #- role: ansible-role-istio
+    - role: chilcano.minishift
       istio:
-        action_to_trigger: clean  # [ deploy | clean ]
+        action_to_trigger: deploy  # [ deploy | clean ]
         action:
           deploy:
             istioctl: true    # istioctl
