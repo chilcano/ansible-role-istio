@@ -27,14 +27,8 @@
           istio_usr: developer
           istio_pwd: anypassword
         repo:
-          #release_tag_name: "0.2.12"
-          #release_tag_name: "0.2.10"
-          #release_tag_name: "0.2.9"
+          name: istio/istio
+          github_url: https://api.github.com/repos
+          #release_tag_name: "" # latest
           release_tag_name: "0.2.7"
           #release_tag_name: "0.2.6"
-          #release_tag_name: "0.2.4"
-          #release_tag_name: "0.2.2"
-          #release_tag_name: "0.2.1"
-          #release_tag_name: "0.2.0"
-          #release_tag_name: "0.1.6"
-          #release_tag_name: "0.1.5"

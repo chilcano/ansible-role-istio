@@ -10,9 +10,9 @@ istio_defaults:
     project: istio-system    # default
     hostname: openshift0
   repo:
-    github_url: https://github.com/istio/istio.git
-    api_github_url: https://api.github.com/repos/istio/istio/releases/tags
-    release_tag_name: ""
+    name: istio/istio
+    github_url: https://api.github.com/repos
+    release_tag_name: ""    # it's latest
   dir:
     local_repo: /Users/Chilcano/Downloads/__kube_repo
     local_tmp: /Users/Chilcano/Downloads/__kube_tmp
