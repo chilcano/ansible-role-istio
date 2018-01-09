@@ -6,7 +6,7 @@
 - name: Get Istio bundle.
   include: get_istio.yml
 
-- name: Set path to 'oc'
+- name: Set path to 'oc'.
   include: set_oc.yml
 
 - name: Login to active Minishift instance.

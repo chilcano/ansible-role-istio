@@ -7,7 +7,7 @@
     istio_ms_hostname_and_profile: openshift0
 
   roles:
-    - role: chilcano.minishift
+    - role: chilcano.istio
       istio:
         action_to_trigger: deploy  # [ deploy | clean ]
         action:
@@ -16,7 +16,6 @@
             core: true        # core components
             addons: true      # prometheus, graphana, zipkin, servicegraph
             sample_apps: true # bookinfo
-          clean: true
         minishift:
           profile: "{{ istio_ms_hostname_and_profile }}"
         openshift:

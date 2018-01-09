@@ -24,4 +24,3 @@ istio_defaults:
       core: true
       addons: true
       sample_apps: true
-    clean: true

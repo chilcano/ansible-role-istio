@@ -17,6 +17,7 @@
 - name: get_istio | Set OS fact as 'linux'
   set_fact:
     istio_os: "linux"
+  when: ansible_system == "Linux"
 
 - name: get_istio | Set OS fact as 'win'
   set_fact:

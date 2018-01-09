@@ -1,6 +1,6 @@
 # Ansible Role: istio
 
-An Ansible Role that deploy Istio (https://istio.io) in an OpenShift cluster running locally, generally created by using Minishift (https://www.openshift.org/minishift).
+An Ansible Role that deploys Istio (https://istio.io) in an OpenShift cluster running locally, generally created by using Minishift (https://www.openshift.org/minishift).
 This Role performs the following tasks:
 
 - Check if OpenShift is running locally.
@@ -54,7 +54,6 @@ $ cat sample-1-istio.yml
             core: true        # core components
             addons: true      # prometheus, graphana, zipkin, servicegraph
             sample_apps: true # bookinfo
-          clean: true
         minishift:
           profile: "{{ istio_ms_hostname_and_profile }}"
         openshift:
