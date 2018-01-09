@@ -22,7 +22,9 @@
   ignore_errors: yes  ### to ignore error when trying remove resources that doesnt exist.
 
 - name: clean | Removing Istio core
-  command: "{{ my_oc }} delete -f istio-{{ __i.repo.release_tag_name }}/install/kubernetes/istio-auth.yaml"
+  command:
+    - "{{ my_oc }} delete -f istio-{{ __i.repo.release_tag_name }}/install/kubernetes/istio-auth.yaml"
+    - "{{ my_oc }} delete project {{ __i.openshift.project }}"
   args:
     chdir: "{{ __i.dir.local_repo }}/{{ istio_asset_name_without_ext }}"
   ignore_errors: yes ### to ignore error when trying remove resources that doesnt exist.

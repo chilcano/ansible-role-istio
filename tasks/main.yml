@@ -5,7 +5,8 @@
 
 - name: Get Istio bundle.
   include: get_istio.yml
-
+  when: __i.action_to_trigger == 'deploy'
+  
 - name: Set path to 'oc'.
   include: set_oc.yml
 
