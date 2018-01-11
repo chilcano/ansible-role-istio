@@ -101,33 +101,60 @@ $ oc project bookinfo
 $ oc status
 In project bookinfo on server https://192.168.99.100:8443
 
-svc/details - 172.30.229.55:9080
-  pod/details-v1-1464079269-2g4zf runs istio/examples-bookinfo-details-v1:0.2.3, docker.io/istio/proxy_debug:0.2.7
+svc/details - 172.30.118.151:9080
+  pod/details-v1-1464079269-wxfl5 runs istio/examples-bookinfo-details-v1:0.2.3, docker.io/istio/proxy_debug:0.2.7
 
-svc/productpage - 172.30.99.163:9080
-  pod/productpage-v1-3915871613-mc87n runs istio/examples-bookinfo-productpage-v1:0.2.3, docker.io/istio/proxy_debug:0.2.7
+svc/productpage - 172.30.163.171:9080
+  pod/productpage-v1-3915871613-p2cp6 runs istio/examples-bookinfo-productpage-v1:0.2.3, docker.io/istio/proxy_debug:0.2.7
 
-svc/ratings - 172.30.96.18:9080
-  pod/ratings-v1-327106889-p8hz7 runs istio/examples-bookinfo-ratings-v1:0.2.3, docker.io/istio/proxy_debug:0.2.7
+svc/ratings - 172.30.13.63:9080
+  pod/ratings-v1-327106889-rvqpv runs istio/examples-bookinfo-ratings-v1:0.2.3, docker.io/istio/proxy_debug:0.2.7
 
-svc/reviews - 172.30.179.156:9080
-  pod/reviews-v3-1994447391-r9mfn runs istio/examples-bookinfo-reviews-v3:0.2.3, docker.io/istio/proxy_debug:0.2.7
-  pod/reviews-v1-3806695627-6swvd runs istio/examples-bookinfo-reviews-v1:0.2.3, docker.io/istio/proxy_debug:0.2.7
-  pod/reviews-v2-3096629009-jq6tp runs istio/examples-bookinfo-reviews-v2:0.2.3, docker.io/istio/proxy_debug:0.2.7
+svc/reviews - 172.30.233.119:9080
+  pod/reviews-v1-3806695627-2xkg6 runs istio/examples-bookinfo-reviews-v1:0.2.3, docker.io/istio/proxy_debug:0.2.7
+  pod/reviews-v2-3096629009-2cfht runs istio/examples-bookinfo-reviews-v2:0.2.3, docker.io/istio/proxy_debug:0.2.7
+  pod/reviews-v3-1994447391-ws74d runs istio/examples-bookinfo-reviews-v3:0.2.3, docker.io/istio/proxy_debug:0.2.7
 
 View details with 'oc describe <resource>/<name>' or list everything with 'oc get all'.
 
 $ oc get pods
+NAME                              READY     STATUS     RESTARTS   AGE
+details-v1-1464079269-wxfl5       0/2       Init:0/2   0          1m
+productpage-v1-3915871613-p2cp6   0/2       Init:0/2   0          1m
+ratings-v1-327106889-rvqpv        0/2       Init:0/2   0          1m
+reviews-v1-3806695627-2xkg6       0/2       Init:0/2   0          1m
+reviews-v2-3096629009-2cfht       0/2       Init:0/2   0          1m
+reviews-v3-1994447391-ws74d       0/2       Init:0/2   0          1m
+
+$ oc get pods
+NAME                              READY     STATUS     RESTARTS   AGE
+details-v1-1464079269-wxfl5       0/2       Init:1/2   0          2m
+productpage-v1-3915871613-p2cp6   0/2       Init:1/2   0          2m
+ratings-v1-327106889-rvqpv        0/2       Init:1/2   0          2m
+reviews-v1-3806695627-2xkg6       0/2       Init:1/2   0          2m
+reviews-v2-3096629009-2cfht       0/2       Init:1/2   0          2m
+reviews-v3-1994447391-ws74d       0/2       Init:1/2   0          2m
+
+$ oc get pods
 NAME                              READY     STATUS            RESTARTS   AGE
-details-v1-1464079269-n75st       0/2       PodInitializing   0          7m
-productpage-v1-3915871613-hl68p   0/2       PodInitializing   0          7m
-ratings-v1-327106889-4c6cs        0/2       PodInitializing   0          7m
-reviews-v1-3806695627-44qkz       0/2       PodInitializing   0          7m
-reviews-v2-3096629009-d7r76       0/2       PodInitializing   0          7m
-reviews-v3-1994447391-dd7vs       0/2       PodInitializing   0          7m
+details-v1-1464079269-wxfl5       0/2       PodInitializing   0          3m
+productpage-v1-3915871613-p2cp6   0/2       PodInitializing   0          3m
+ratings-v1-327106889-rvqpv        0/2       PodInitializing   0          3m
+reviews-v1-3806695627-2xkg6       0/2       PodInitializing   0          3m
+reviews-v2-3096629009-2cfht       0/2       PodInitializing   0          3m
+reviews-v3-1994447391-ws74d       0/2       PodInitializing   0          3m
+
+$ oc get pods
+NAME                              READY     STATUS    RESTARTS   AGE
+details-v1-1464079269-wxfl5       2/2       Running   0          7m
+productpage-v1-3915871613-p2cp6   2/2       Running   0          7m
+ratings-v1-327106889-rvqpv        2/2       Running   0          7m
+reviews-v1-3806695627-2xkg6       2/2       Running   0          7m
+reviews-v2-3096629009-2cfht       2/2       Running   0          7m
+reviews-v3-1994447391-ws74d       2/2       Running   0          7m
 ```
 
-Finally you will see Istio and BookInfo App running in your OpenShift Cluster. The `PodInitializing` means that BookInfo App is being initializing and it isn't ready to use.
+Finally you will see Istio and BookInfo App running in your OpenShift Cluster. The `Init:0/2`, `Init:1/2` and ``PodInitializing` mean that BookInfo App is  initializing/starting and it isn't ready to use.
 All pictures below were captured from Weave Scope App. It's a tool to manage, monitor and visualize your OpenShift Cluster. If you want to install it, you can use the Weave Scope Ansible Role that I've created for you (https://github.com/chilcano/ansible-role-weave-scope).
 
 * Exploring all Istio components (select `istio-system` namespace).
