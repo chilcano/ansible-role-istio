@@ -131,31 +131,31 @@ Finally you will see Istio and BookInfo App running in your OpenShift Cluster. T
 
 * Exploring all Istio components (select `istio-system` namespace).
 
-![Selecting istio-system namespace](https://github.com/chilcano/ansible-minishift-istio-security/blob/master/imgs/api-mesh-security-7-weave-scope-istio-system.png "Selecting istio-system namespace")
+![Selecting istio-system namespace](https://github.com/chilcano/ansible-role-istio/blob/master/imgs/api-mesh-security-7-weave-scope-istio-system.png "Selecting istio-system namespace")
 
 * Exploring BookInfo App deployed on OpenShift (select `bookinfo` namespace).
 
-![Selecting bookinfo namespace](https://github.com/chilcano/ansible-minishift-istio-security/blob/master/imgs/api-mesh-security-8-weave-scope-bookinfo.png "Selecting bookinfo namespace")
+![Selecting bookinfo namespace](https://github.com/chilcano/ansible-role-istio/blob/master/imgs/api-mesh-security-8-weave-scope-bookinfo.png "Selecting bookinfo namespace")
 
 * Exploring in depth the BookInfo App.
 
-![Exploring in depth the API Mesh](https://github.com/chilcano/ansible-minishift-istio-security/blob/master/imgs/api-mesh-security-9-weave-scope-bookinfo-mesh.png "Exploring in depth the API Mesh")
+![Exploring in depth the API Mesh](https://github.com/chilcano/ansible-role-istio/blob/master/imgs/api-mesh-security-9-weave-scope-bookinfo-mesh.png "Exploring in depth the API Mesh")
 
 * Using BookInfo Web App and making calls to BookInfo APIs.
 
-![Using BookInfo App deployed on OpenShift](https://github.com/chilcano/ansible-minishift-istio-security/blob/master/imgs/api-mesh-security-3-istio-bookinfo-app.png "Using BookInfo App deployed on OpenShift")
+![Using BookInfo App deployed on OpenShift](https://github.com/chilcano/ansible-role-istio/blob/master/imgs/api-mesh-security-3-istio-bookinfo-app.png "Using BookInfo App deployed on OpenShift")
 
 * The Istio Addons: Tracing with Zipkin.
 
-![Tracing with Zipkin](https://github.com/chilcano/ansible-minishift-istio-security/blob/master/imgs/api-mesh-security-4-istio-zipkin.png "Tracing with Zipkin")
+![Tracing with Zipkin](https://github.com/chilcano/ansible-role-istio/blob/master/imgs/api-mesh-security-4-istio-zipkin.png "Tracing with Zipkin")
 
 * The Istio Addons: Exploring metrics with Grafana.
 
-![Exploring metrics with Grafana](https://github.com/chilcano/ansible-minishift-istio-security/blob/master/imgs/api-mesh-security-5-istio-grafana.png "Exploring metrics with Grafana")
+![Exploring metrics with Grafana](https://github.com/chilcano/ansible-role-istio/blob/master/imgs/api-mesh-security-5-istio-grafana.png "Exploring metrics with Grafana")
 
 * The Istio Addons: Viewing the flows with ServiceGraph.
 
-![Viewing the flows with ServiceGraph](https://github.com/chilcano/ansible-minishift-istio-security/blob/master/imgs/api-mesh-security-6-istio-servicegraph.png "Viewing the flows with ServiceGraph")
+![Viewing the flows with ServiceGraph](https://github.com/chilcano/ansible-role-istio/blob/master/imgs/api-mesh-security-6-istio-servicegraph.png "Viewing the flows with ServiceGraph")
 
 
 ## License
