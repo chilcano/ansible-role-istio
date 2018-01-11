@@ -128,6 +128,7 @@ reviews-v3-1994447391-dd7vs       0/2       PodInitializing   0          7m
 ```
 
 Finally you will see Istio and BookInfo App running in your OpenShift Cluster. The `PodInitializing` means that BookInfo App is being initializing and it isn't ready to use.
+All pictures below were captured from Weave Scope App. It's a tool to manage, monitor and visualize your OpenShift Cluster. If you want to install it, you can use the Weave Scope Ansible Role that I've created for you (https://github.com/chilcano/ansible-role-weave-scope).
 
 * Exploring all Istio components (select `istio-system` namespace).
 
