@@ -9,7 +9,7 @@
     istio_release_url: "{{ __i.repo.github_url }}/{{ __i.repo.name }}/releases/tags/{{ __i.repo.release_tag_name }}"
   when: __i.repo.release_tag_name != ''
 
-- name: get_istio | Query the 'istio_release_url'
+- name: get_istio | Query the '{{ istio_release_url }}'
   uri:
     url: "{{ istio_release_url }}"
   register: istio_release
@@ -39,6 +39,10 @@
   vars:
     my_query: "assets[?name=='istio-{{ istio_release.json.tag_name }}-{{ istio_os }}.tar.gz']"
 
+- name: get_istio | Updating 'istio_release_tag_name' with Istio Tag Name
+  set_fact:
+    istio_release_tag_name: "{{ istio_release.json.tag_name  }}"
+
 - name: get_istio | Create '{{ istio_asset_name_without_ext }}' dir to unarchive
   file:
     path: "{{ __i.dir.local_repo }}/{{ istio_asset_name_without_ext }}"
@@ -53,11 +57,11 @@
 - name: get_istio | Unzip the archive
   command: "unzip {{ __i.dir.local_repo }}/{{ istio_asset_name }} -d {{ __i.dir.local_repo }}/{{ istio_asset_name_without_ext }}"
   args:
-    creates: "{{ __i.dir.local_repo }}/{{ istio_asset_name_without_ext }}/istio-{{ __i.repo.release_tag_name }}/bin/istioctl"
-  when: istio_asset_name | search('zip$')
+    creates: "{{ __i.dir.local_repo }}/{{ istio_asset_name_without_ext }}/istio-{{ istio_release_tag_name }}/bin/istioctl"
+  when: istio_asset_name | regex_search('zip$')
 
 - name: get_istio | Untar the archive
   command: "tar -xvzf {{ __i.dir.local_repo }}/{{ istio_asset_name }} -C {{ __i.dir.local_repo }}/{{ istio_asset_name_without_ext }}"
   args:
-    creates: "{{ __i.dir.local_repo }}/{{ istio_asset_name_without_ext }}/istio-{{ __i.repo.release_tag_name }}/bin/istioctl"
-  when: istio_asset_name | search('tar.gz$')
+    creates: "{{ __i.dir.local_repo }}/{{ istio_asset_name_without_ext }}/istio-{{ istio_release_tag_name }}/bin/istioctl"
+  when: istio_asset_name | regex_search('tar.gz$')

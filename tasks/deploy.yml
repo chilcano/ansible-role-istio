@@ -27,19 +27,28 @@
 - name: config_pre | Preparing namespace/project '{{ __i.openshift.project }}'
   command: "{{ item }}"
   with_items:
-    - "{{ my_oc }} adm policy add-scc-to-user anyuid -z istio-ingress-service-account -n {{ __i.openshift.project }}"
-    - "{{ my_oc }} adm policy add-scc-to-user anyuid -z istio-egress-service-account -n {{ __i.openshift.project }}"
-
-- name: config_pre | Prometheus and grafana run as root and they use 'default' system account
-  command: "{{ item }}"
-  with_items:
-    - "{{ my_oc }} adm policy add-scc-to-user anyuid -z default -n {{ __i.openshift.project }}"
+    - "{{ my_oc }} adm policy add-scc-to-user anyuid -z istio-ingress-service-account"
+    - "{{ my_oc }} adm policy add-scc-to-user privileged -z istio-ingress-service-account"
+    - "{{ my_oc }} adm policy add-scc-to-user anyuid -z istio-egress-service-account"
+    - "{{ my_oc }} adm policy add-scc-to-user privileged -z istio-egress-service-account"
+    - "{{ my_oc }} adm policy add-scc-to-user anyuid -z istio-pilot-service-account"
+    - "{{ my_oc }} adm policy add-scc-to-user privileged -z istio-pilot-service-account"
+    - "{{ my_oc }} adm policy add-scc-to-user anyuid -z default"
+    - "{{ my_oc }} adm policy add-scc-to-user privileged -z default"
+    - "{{ my_oc }} adm policy add-cluster-role-to-user cluster-admin -z default"
 
 ###### deploy_istio
+- name: deploy_istio | Get all routes info about of namespace/project '{{ __i.openshift.project }}'
+  command: "{{ my_oc }} get routes -n {{ __i.openshift.project }}"
+  register: istio_all_routes
+
+#- name: deploy_istio | Get all deployments info about of namespace/project '{{ __i.openshift.project }}'
+#  command: "{{ my_oc }} get deploy -n {{ __i.openshift.project }}"
+#  register: istio_all_deploy
 
 - name: deploy_istio | Copy 'istioctl' to the 'bin' directory
   copy:
-    src: "{{ __i.dir.local_repo }}/{{ istio_asset_name_without_ext }}/istio-{{ __i.repo.release_tag_name }}/bin/istioctl"
+    src: "{{ __i.dir.local_repo }}/{{ istio_asset_name_without_ext }}/istio-{{ istio_release_tag_name }}/bin/istioctl"
     dest: "{{ __i.dir.local_bin }}/istioctl"
     remote_src: yes
     mode: 0775
@@ -47,32 +56,38 @@
   become: yes
   when: __i.action.deploy.istioctl
 
-- name: deploy_istio | Install Istio core
+- name: deploy_istio | Updating Istio addon (servicegraph) before installing
+  replace:
+    path: "{{ __i.dir.local_repo }}/{{ istio_asset_name_without_ext }}/istio-{{ istio_release_tag_name }}/install/kubernetes/addons/servicegraph.yaml"
+    regexp: '(\s*)image: docker.io/istio/servicegraph:0.5.0$'
+    replace: '\1image: docker.io/istio/servicegraph:0.5.1'
+    backup: yes
+  when: __i.action.deploy.addons and istio_release_tag_name == '0.5.0'
+
+- name: deploy_istio | Install Istio core and Addons
   command: "{{ item }}"
   with_items:
-    #- "{{ my_oc }} apply -f istio-{{ __i.repo.release_tag_name }}/install/kubernetes/istio.yaml"       ## without mutual TLS authentication between sidecars
-    - "{{ my_oc }} apply -f istio-{{ __i.repo.release_tag_name }}/install/kubernetes/istio-auth.yaml"   ## with mutual TLS authentication between sidecars
-    - "{{ my_oc }} expose svc istio-ingress"
+    #- "{{ my_oc }} apply -f istio-{{ istio_release_tag_name }}/install/kubernetes/istio.yaml"          ## without mutual TLS authentication between sidecars
+    - "{{ my_oc }} apply -f istio-{{ istio_release_tag_name }}/install/kubernetes/istio-auth.yaml"      ## with mutual TLS authentication between sidecars
+    - "{{ my_oc }} apply -f istio-{{ istio_release_tag_name }}/install/kubernetes/addons/zipkin.yaml"         ## zipkin for tracing
+    - "{{ my_oc }} apply -f istio-{{ istio_release_tag_name }}/install/kubernetes/addons/prometheus.yaml"     ## prometheus for metrics
+    - "{{ my_oc }} apply -f istio-{{ istio_release_tag_name }}/install/kubernetes/addons/grafana.yaml"        ## grafana for visualizing metrics generated for prometheus
+    - "{{ my_oc }} apply -f istio-{{ istio_release_tag_name }}/install/kubernetes/addons/servicegraph.yaml"   ## visualize microservices call map
   args:
     chdir: "{{ __i.dir.local_repo }}/{{ istio_asset_name_without_ext }}"
-  when: __i.action.deploy.core
+  when: __i.action.deploy.core or __i.action.deploy.addons
 
-- name: deploy_istio_addons | Install Istio addons
-  command: "{{ item }}"
+- name: deploy_istio | Exposing Services (Routes)
+  command: "{{ my_oc }} expose svc {{ item }}"
   with_items:
-    - "{{ my_oc }} apply -f istio-{{ __i.repo.release_tag_name }}/install/kubernetes/addons/zipkin.yaml"         ## zipkin for tracing
-    - "{{ my_oc }} apply -f istio-{{ __i.repo.release_tag_name }}/install/kubernetes/addons/prometheus.yaml"     ## prometheus for metrics
-    - "{{ my_oc }} apply -f istio-{{ __i.repo.release_tag_name }}/install/kubernetes/addons/grafana.yaml"        ## grafana for visualizing metrics generated for prometheus
-    - "{{ my_oc }} apply -f istio-{{ __i.repo.release_tag_name }}/install/kubernetes/addons/servicegraph.yaml"   ## visualize microservices call map
-    - "{{ my_oc }} expose svc zipkin"
-    - "{{ my_oc }} expose svc prometheus"
-    - "{{ my_oc }} expose svc grafana"
-    - "{{ my_oc }} expose svc servicegraph"
-  args:
-    chdir: "{{ __i.dir.local_repo }}/{{ istio_asset_name_without_ext }}"
-  when: __i.action.deploy.addons
+    - "istio-ingress"
+    - "zipkin"
+    - "prometheus"
+    - "grafana"
+    - "servicegraph"
+  when: (istio_all_routes is undefined) or not (istio_all_routes.stdout | regex_search(item))
 
-###### deploy_bookinfo and apply Istio
+###### deploy_bookinfo
 
 - name: deploy_bookinfo | Create new namespace/project 'bookinfo'
   command: "{{ my_oc }} new-project bookinfo"
@@ -87,18 +102,15 @@
   with_items:
     - "{{ my_oc }} adm policy add-scc-to-user privileged -z default -n bookinfo"
 
-- name: deploy_bookinfo | Set fact '_istio_repo_'
-  set_fact:
-     _istio_repo_: "{{ __i.dir.local_repo }}/{{ istio_asset_name_without_ext }}"
-
 - name: deploy_bookinfo | Deploy BookInfo App with 'istioctl kube-inject' - injects/adds Envoy Sidecar proxies to each of the Kubernetes Deployment YAML
   shell: "{{ item }}"
   with_items:
-    #- "{{ my_oc }} apply -f <( istioctl kube-inject -f istio-{{ __i.repo.release_tag_name }}/samples/apps/bookinfo/bookinfo.yaml )"  ## istio < 0.2.7
-    - "{{ my_oc }} apply -f <( istioctl kube-inject -f istio-{{ __i.repo.release_tag_name }}/samples/bookinfo/kube/bookinfo.yaml )"   ## istio >= 0.2.7
+    #- "{{ my_oc }} apply -f <( istioctl kube-inject -f istio-{{ istio_release_tag_name }}/samples/apps/bookinfo/bookinfo.yaml )"  ## istio < 0.2.7
+    - "{{ my_oc }} apply -f <( istioctl kube-inject -f istio-{{ istio_release_tag_name }}/samples/bookinfo/kube/bookinfo.yaml )"   ## istio >= 0.2.7
   args:
     executable: "/bin/bash"
-    chdir: "{{ _istio_repo_ }}"
+    chdir: "{{ __i.dir.local_repo }}/{{ istio_asset_name_without_ext }}"
+  when: __i.action.deploy.sample_apps
 
 ###### config_post
 
@@ -107,10 +119,10 @@
     dest: /etc/hosts
     line: '{{ item }}'
   with_items:
-    - "{{ instance_ip_address.stdout }}  zipkin-istio-system.{{ instance_ip_address.stdout }}.nip.io"
-    - "{{ instance_ip_address.stdout }}  grafana-istio-system.{{ instance_ip_address.stdout }}.nip.io"
-    - "{{ instance_ip_address.stdout }}  servicegraph-istio-system.{{ instance_ip_address.stdout }}.nip.io"
-    - "{{ instance_ip_address.stdout }}  istio-ingress-istio-system.{{ instance_ip_address.stdout }}.nip.io"
+    - "{{ instance_ip_address.stdout }} zipkin-istio-system.{{ instance_ip_address.stdout }}.nip.io"
+    - "{{ instance_ip_address.stdout }} grafana-istio-system.{{ instance_ip_address.stdout }}.nip.io"
+    - "{{ instance_ip_address.stdout }} servicegraph-istio-system.{{ instance_ip_address.stdout }}.nip.io"
+    - "{{ instance_ip_address.stdout }} istio-ingress-istio-system.{{ instance_ip_address.stdout }}.nip.io"
   become: yes
 
 - name: Installation Istio and components completed.
